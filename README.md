@@ -5,8 +5,5 @@ Download any `deploy.yml` file from app-interface like
 and run
 
 ```
-python main.py > results.csv
+INPUT_FILE=deploy.yml python main.py > results.csv
 ```
-
-If the file name is different than `deploy.yml`, rename the file or modify the
-variable in [main.py](main.py).

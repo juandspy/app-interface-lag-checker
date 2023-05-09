@@ -1,10 +1,17 @@
+import os
+
 from reader import get_resources
 from lag_checker import get_lag_from_repo, clone_resource
 
 
+INPUT_FILE = os.environ.get("INPUT_FILE")
+if INPUT_FILE is None:
+    print("ERROR: INPUT_FILE environment variable must be set")
+    exit(1)
+
 print("url,name,env_name,lag")
 
-for resource in get_resources("deploy.yml"):
+for resource in get_resources(INPUT_FILE):
     url, name = resource["url"], resource["name"]
     repo = clone_resource(url, name)
     # pprint(resource)
