@@ -2,7 +2,6 @@ import yaml
 from yaml.loader import SafeLoader
 from typing import Dict
 from pprint import pprint
-import git
 
 def read_yml(path: str) -> Dict:
     with open(path) as f:
