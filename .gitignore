@@ -3,3 +3,5 @@ __pycache__/
 
 deploy.yml
 results.csv
+app-interface/
+results/
