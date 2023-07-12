@@ -2,6 +2,8 @@ import os
 import glob
 import pandas as pd
 import matplotlib.pyplot as plt
+from datetime import datetime
+
 
 pd.set_option('display.max_columns', None)
 
@@ -9,6 +11,9 @@ LABEL_SIZE = 10
 LEGEND_SIZE = 5
 IGNORE_ENVS = ["ocm.yml", "ephemeral-base.yml", "stage-ccx-data-pipeline-stage.yml"]
 TITLE = "Difference in commits between stage and production"
+SUMMIT_FREEZE__START_DATE = datetime(2023, 5, 8)
+SUMMIT_FREEZE__END_DATE = datetime(2023, 5, 23)
+
 
 def join_results() -> pd.DataFrame:
     path = os.getcwd()
@@ -22,6 +27,7 @@ def join_results() -> pd.DataFrame:
         df['date'] = pd.to_datetime(df['date'], format='%y-%m-%d')
 
         joined = pd.concat([joined, df])
+    joined = joined.sort_values(by=['date'])
     return joined
 
 def fill_ax(ax: plt.Axes, title:str):
@@ -29,6 +35,14 @@ def fill_ax(ax: plt.Axes, title:str):
     # ax.set_ylabel("lag", size = LABEL_SIZE)
     ax.set_title(title, fontdict={'fontsize':LABEL_SIZE})
     ax.legend(loc="upper right", prop=dict(size=LEGEND_SIZE))
+
+def plot_summit_freeze(ax: plt.Axes):
+    ax.axvspan(
+        SUMMIT_FREEZE__START_DATE,
+        SUMMIT_FREEZE__END_DATE,
+        alpha=0.5, color='red'
+    )
+
 
 def plot_lag_for_service(df: pd.DataFrame, service: str, ax: plt.Axes, label = ""):
     df = df.copy()
@@ -48,6 +62,7 @@ def plot_grid_of_services(df: pd.DataFrame):
     for (ax, service) in zip(axs.flat, services):
         plot_lag_for_service(df, service, ax)
         fill_ax(ax, service)
+        plot_summit_freeze(ax)
     
     fig.suptitle(TITLE, fontsize=16)
     return fig
@@ -61,6 +76,7 @@ def plot_together(df: pd.DataFrame):
     for service in services:
         plot_lag_for_service(df, service, ax, label=service)
     fill_ax(ax, TITLE)
+    plot_summit_freeze(ax)
     return fig
 
 if __name__ == "__main__":
