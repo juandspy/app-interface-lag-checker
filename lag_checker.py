@@ -30,7 +30,7 @@ def get_commit_n_days_ago(repo: git.Repo, n_days: int):
     Return $(git rev-list -n1 --before="$N_DAYS days ago" "$BRANCH")
     """
     if n_days == 0:
-        return
+        return repo.head.object.hexsha
     branch = repo.active_branch.name
     commit = repo.git.rev_list(f"{branch}", n=1, before=f"{n_days} days ago")
     return commit
